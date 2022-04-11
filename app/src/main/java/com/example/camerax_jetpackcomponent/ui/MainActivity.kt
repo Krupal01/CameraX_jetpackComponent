@@ -1,34 +1,32 @@
-package com.example.camerax_jetpackcomponent
+package com.example.camerax_jetpackcomponent.ui
 
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.hardware.camera2.CameraCharacteristics
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.camera2.interop.Camera2CameraInfo
-import androidx.camera.camera2.interop.ExperimentalCamera2Interop
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.video.*
 import androidx.camera.video.VideoCapture
-import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
-import androidx.lifecycle.LifecycleOwner
+import com.example.camerax_jetpackcomponent.R
 import com.example.camerax_jetpackcomponent.databinding.ActivityMainBinding
-import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.logging.SimpleFormatter
 
 class MainActivity : AppCompatActivity() {
 
@@ -107,6 +105,21 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.GoToImages){
+            startActivity(Intent(baseContext,SavedImages::class.java))
+        }
+        if (item.itemId == R.id.GoToVideos){
+            startActivity(Intent(baseContext,SavedVideoActivity::class.java))
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun captureVideo() {
         val videoCapture = this.videoCapture ?: return
 
@@ -161,7 +174,8 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             recording?.close()
                             recording = null
-                            Log.e(TAG, "Video capture ends with error: " +
+                            Log.e(
+                                TAG, "Video capture ends with error: " +
                                     "${recordEvent.error}")
                         }
                         binding.videoCaptureButton.apply {
